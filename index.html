@@ -107,49 +107,73 @@
   </div>
 
   <script>
-    const form = document.getElementById('reportForm');
-    const msgContainer = document.getElementById('msgContainer');
+  const form = document.getElementById('reportForm');
+  const msgContainer = document.getElementById('msgContainer');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      msgContainer.innerHTML = '';
+  // 👇 Replace this with your desired URL: test or production
+  const WEBHOOK_URL = "https://haulmerinc.app.n8n.cloud/webhook-test/reporte";
 
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Check field validity
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    // Validate date order
+    const inicio = document.getElementById('fechaInicio').value;
+    const fin = document.getElementById('fechaFin').value;
+    if (inicio && fin && inicio > fin) {
+      msgContainer.innerHTML = `
+        <p class="text-sm text-red-600 font-medium">
+          La fecha inicio no puede ser posterior a la fecha fin.
+        </p>`;
+      return;
+    }
+
+    // Build data payload
+    const data = {
+      rut: document.getElementById('rut').value.trim(),
+      tipo_reporte: document.getElementById('tipoReporte').value,
+      fecha_inicio: inicio,
+      fecha_fin: fin,
+      correo_destinatario: document.getElementById('correo').value.trim(),
+    };
+
+    try {
+      // Send data to n8n webhook
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        msgContainer.innerHTML = `
+          <p class="text-sm text-green-600 font-medium">
+            Reporte enviado correctamente. Revisa el correo destinatario.
+          </p>`;
+        form.reset();
+      } else {
+        const errText = await response.text();
+        msgContainer.innerHTML = `
+          <p class="text-sm text-red-600 font-medium">
+            Error al enviar el reporte: ${response.status} ${errText}
+          </p>`;
       }
 
-      const inicio = document.getElementById('fechaInicio').value;
-      const fin = document.getElementById('fechaFin').value;
+    } catch (err) {
+      msgContainer.innerHTML = `
+        <p class="text-sm text-red-600 font-medium">
+          Error de conexión: ${err.message}
+        </p>`;
+    }
+  });
+</script>
 
-      if (inicio && fin && inicio > fin) {
-        msgContainer.innerHTML =
-          '<p class="text-sm text-red-600 font-medium">La fecha inicio no puede ser posterior a la fecha fin.</p>';
-        return;
-      }
-
-      const formData = Object.fromEntries(new FormData(form).entries());
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          msgContainer.innerHTML =
-            '<p class="text-sm text-green-600 font-medium">Reporte enviado correctamente. Revisa tu correo.</p>';
-          form.reset();
-        } else {
-          msgContainer.innerHTML =
-            '<p class="text-sm text-red-600 font-medium">Error al enviar el formulario. Inténtalo nuevamente.</p>';
-        }
-      } catch (error) {
-        msgContainer.innerHTML =
-          '<p class="text-sm text-red-600 font-medium">No se pudo conectar al servidor.</p>';
-      }
-    });
-  </script>
 </body>
 </html>
