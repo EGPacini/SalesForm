@@ -1,0 +1,58 @@
+/* ================================
+   Custom Styles for GitHub Pages Site
+   ================================ */
+
+/* Background and general tweaks */
+body {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ✨ Form container animation */
+div.bg-white {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+div.bg-white:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* 🧭 Headings */
+h2 {
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  color: #3730a3; /* Tailwind indigo-800 */
+}
+
+/* 🖋️ Inputs and textareas */
+input, textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* soft indigo glow */
+}
+
+/* 🚀 Submit button enhancement */
+button {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35);
+}
+
+/* ✅ Success message */
+#successMsg {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
