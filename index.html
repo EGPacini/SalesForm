@@ -22,7 +22,7 @@
       id="reportForm"
       class="space-y-4"
       method="POST"
-      action="https://haulmerinc.app.n8n.cloud/webhook-test/reporte"
+      action="https://haulmerinc.app.n8n.cloud/webhook/reporte"
       novalidate
     >
       <!-- RUT (alphanumeric) -->
@@ -143,7 +143,6 @@
     };
 
     try {
-      // Send data to n8n webhook
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
